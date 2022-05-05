@@ -26,23 +26,42 @@
 #include "mzapo_regs.h"
 #include "serialize_lock.h"
 
+
 int main(int argc, char *argv[])
 {
 
   /* Serialize execution of applications */
 
+	void * parlcd_base = map_phys_address(PARLCD_REG_BASE_PHYS, PARLCD_REG_SIZE, 0);
+
+
   /* Try to acquire lock the first */
   if (serialize_lock(1) <= 0) {
-    printf("System is occupied\n");
+	printf("System is occupied\n");
 
-    if (1) {
-      printf("Waitting\n");
-      /* Wait till application holding lock releases it or exits */
-      serialize_lock(0);
-    }
+	if (1) {
+	  printf("Waitting\n");
+	  /* Wait till application holding lock releases it or exits */
+	  serialize_lock(0);
+	}
+  }
+	printf("Hello world\n");
+//#define PARLCD_REG_DATA_o               0x000C
+
+  *(volatile uint32_t*)(parlcd_base + PARLCD_REG_DATA_o) = 0x2c;
+  
+  for (int y = 0; y < 320; y++)
+  {
+
+	  for (int x = 0; x < 100; x++)
+	  {
+		 
+		  *(volatile uint32_t*)(parlcd_base + PARLCD_REG_DATA_o) = 0xaaaa;
+	  }
   }
 
-  printf("Hello world\n");
+
+  
 
   sleep(4);
 
