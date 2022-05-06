@@ -45,14 +45,16 @@ int main(int argc, char *argv[])
 	  serialize_lock(0);
 	}
   }
-	printf("Hello world\n");
-//#define PARLCD_REG_DATA_o               0x000C
+  
+  /***************************************************/
+  /*                      CODE                       */
+  /***************************************************/
+	fprintf(stdout, "Starting application.\n");
 
   *(volatile uint32_t*)(parlcd_base + PARLCD_REG_DATA_o) = 0x2c;
   
   for (int y = 0; y < 320; y++)
   {
-
 	  for (int x = 0; x < 100; x++)
 	  {
 		 
@@ -61,11 +63,7 @@ int main(int argc, char *argv[])
   }
 
 
-  
-
-  sleep(4);
-
-  printf("Goodbye world\n");
+  fprintf(stodut, "End.\n");
 
   /* Release the lock */
   serialize_unlock();
