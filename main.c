@@ -31,37 +31,79 @@ int main(int argc, char *argv[])
 {
 
   /* Serialize execution of applications */
-
 	void * parlcd_base = map_phys_address(PARLCD_REG_BASE_PHYS, PARLCD_REG_SIZE, 0);
-
 
   /* Try to acquire lock the first */
   if (serialize_lock(1) <= 0) {
-	printf("System is occupied\n");
+	  printf("System is occupied\n");
 
-	if (1) {
-	  printf("Waitting\n");
-	  /* Wait till application holding lock releases it or exits */
-	  serialize_lock(0);
-	}
+	  if (1) {
+	    printf("Waitting\n");
+	    /* Wait till application holding lock releases it or exits */
+	    serialize_lock(0);
+  	}
   }
-  
+
+  volatile void *spiled_reg_base = map_phys_address(SPILED_REG_BASE_PHYS, SPILED_REG_SIZE, 0);
+  volatile uint32_t *ledline = (spiled_reg_base + SPILED_REG_LED_LINE_o);
+  volatile uint32_t *rgb1 = (spiled_reg_base + SPILED_REG_LED_RGB1_o);
+  *ledline = 0x6600;
+  *rgb1 = ((union led){ .r = 0xff, .g = 0xff }).data;
+
   /***************************************************/
   /*                      CODE                       */
   /***************************************************/
+
 	fprintf(stdout, "Starting application.\n");
 
-  *(volatile uint32_t*)(parlcd_base + PARLCD_REG_DATA_o) = 0x2c;
-  
-  for (int y = 0; y < 320; y++)
+  // allocate memory
+  //union pixel** buffer = (union pixel**)allocate_buffer();
+	union pixel** buffer = (uint16_t**)malloc(DISPLAY_SIZE_X * sizeof(uint16_t*));
+	for (int i = 0; i < DISPLAY_SIZE_X; i++) {
+    buffer[i] = (union pixel*)malloc(DISPLAY_SIZE_Y * sizeof(uint16_t));
+		if (!buffer[i]){
+			fprintf(stderr, "MEMORY ERROR.\n");
+			return 101;
+		}
+	}
+
+  // clear() func
+  for (unsigned x = 0; x < DISPLAY_SIZE_X; x++) {
+    for (unsigned y = 0; y < DISPLAY_SIZE_Y; y++) {
+      buffer[x][y].data = 0xffff;
+    }
+  }
+
+  // print hello world
+  union pixel mycolor = {.data = 0xf100}; // red
+	pstring(buffer, "hello world", 200, 100, mycolor);
+
+  unsigned char *parlcd_reg_base = map_phys_address(PARLCD_REG_BASE_PHYS, PARLCD_REG_SIZE, 0);
+  parlcd_write_cmd(parlcd_reg_base, 0x2c);
+
+  // old version (?)
+  //*(volatile uint32_t*)(parlcd_base + PARLCD_REG_DATA_o) = 0x2c;
+
+  /* for (int y = 0; y < 320; y++)
   {
 	  for (int x = 0; x < 100; x++)
 	  {
-		 
 		  *(volatile uint32_t*)(parlcd_base + PARLCD_REG_DATA_o) = 0xaaaa;
 	  }
+  }*/
+
+  for (unsigned y = 0; y < DISPLAY_SIZE_Y; y++) {
+    for (unsigned x = 0; x < DISPLAY_SIZE_X; x++) {
+      parlcd_write_data(parlcd_reg_base, buffer[x][y].data);
+    }
   }
 
+  // free memory func
+  for (int i = 0; i < 320; i++) {
+    free(buffer[i]);
+	}
+	free(buffer);
+	buffer = NULL;
 
   fprintf(stodut, "End.\n");
 
