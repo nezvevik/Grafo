@@ -1,0 +1,6 @@
+depend
+main
+main.o
+mzapo_parlcd.o
+mzapo_phys.o
+serialize_lock.o
