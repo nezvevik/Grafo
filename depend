@@ -67,7 +67,8 @@ main.o: main.c /usr/arm-linux-gnueabihf/include/stdc-predef.h \
  /usr/arm-linux-gnueabihf/include/bits/mman-shared.h \
  /usr/arm-linux-gnueabihf/include/fcntl.h \
  /usr/arm-linux-gnueabihf/include/bits/fcntl.h \
- /usr/arm-linux-gnueabihf/include/bits/fcntl-linux.h display_utils.h
+ /usr/arm-linux-gnueabihf/include/bits/fcntl-linux.h font_rom8x16.c \
+ display_utils.h
 mzapo_phys.o: mzapo_phys.c /usr/arm-linux-gnueabihf/include/stdc-predef.h \
  /usr/arm-linux-gnueabihf/include/sys/types.h \
  /usr/arm-linux-gnueabihf/include/features.h \

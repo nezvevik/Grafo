@@ -9,6 +9,7 @@
 
 #include "draw_utils.h"
 #include "font_types.h"
+#include "font_rom8x16.c"
 
 void pchar(union pixel** buffer, char c, unsigned x, unsigned y, union pixel color) {
   for (unsigned w = 0; w < font_rom8x16.maxwidth; w++) {
