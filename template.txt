@@ -27,23 +27,22 @@
 #include "mzapo_regs.h"
 #include "font_types.h"
 #include "draw_utils.h"
-#include "draw_utils.c"
 #include "display_utils.h"
 
 int main(int argc, char *argv[])
 {	
 	// allocate memory for buffer
 	//union pixel** buffer = (union pixel**)allocate_buffer();
-	union pixel** buffer = (uint16_t**)malloc(DISPLAY_SIZE_X * sizeof(uint16_t*));
+	/*union pixel** buffer = (uint16_t**)malloc(DISPLAY_SIZE_X * sizeof(uint16_t*));
 	for (int i = 0; i < DISPLAY_SIZE_X; i++) {
 	    buffer[i] = (union pixel*)malloc(DISPLAY_SIZE_Y * sizeof(uint16_t));
 		if (!buffer[i]){
 			fprintf(stderr, "MEMORY ERROR.\n");
 			return 101;
 		}
-	}
+	}*/
     
-	//uninon pixel buffer[420][380];
+	uninon pixel buffer[420][380];
 	
 	
   volatile void *spiled_reg_base = map_phys_address(SPILED_REG_BASE_PHYS, SPILED_REG_SIZE, 0);
@@ -63,7 +62,7 @@ int main(int argc, char *argv[])
           buffer[i + 20][120] = (union pixel){ .b = 0x1f };
   }*/
 
-	union pixel mycolor = {.data = 0xff11};
+	union pixel mycolor = {.data = 0xffff};
 	pchar(buffer, 'a', 100, 200, mycolor);
 	pstring(buffer, "hello world", 200, 100, mycolor);
 	
