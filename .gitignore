@@ -4,3 +4,6 @@ mzapo_parlcd.o
 mzapo_phys.o
 serialize_lock.o
 depend
+connect.gdp
+.main.c.swps
+main_backup.txt
